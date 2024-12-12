@@ -1,4 +1,10 @@
 
+# TODO
+
+python -m pip install .
+
+
+
 ==========================
 Welcome to django-allauth!
 ==========================

@@ -74,6 +74,9 @@ class OAuth2Client:
         if data and pkce_code_verifier:
             data["code_verifier"] = pkce_code_verifier
         # TODO: Proper exception handling
+        import logging
+        logger = logging.getLogger(__name__)                
+        logger.info(f"GET_ACCESS_TOKEN: p:{params} d:{data} h:{self.headers} a:{auth}")        
         resp = (
             get_adapter()
             .get_requests_session()

@@ -74,6 +74,9 @@ class MicrosoftGraphOAuth2Adapter(OAuth2Adapter):
     profile_url_params = {"$select": ",".join(user_properties)}
 
     def complete_login(self, request, app, token, **kwargs):
+        import logging
+        logger = logging.getLogger(__name__)                
+        logger.info(f"Authorization Bearer: {token.token} ")            
         headers = {"Authorization": "Bearer {0}".format(token.token)}
         response = (
             get_adapter()
