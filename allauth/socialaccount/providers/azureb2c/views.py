@@ -11,7 +11,7 @@ from allauth.socialaccount.providers.oauth2.views import (
 )
 import jwt
 
-def extract_oid_and_name(jwt_token ):
+def extract_oid_and_name(jwt_token):
     try:
         # Decodifica o token JWT
         decoded_token = jwt.decode(jwt_token, options={"verify_signature": False})
@@ -21,7 +21,12 @@ def extract_oid_and_name(jwt_token ):
         name = decoded_token.get("name")
         idfrg = decoded_token.get("extension_idfrg")
 
-        return oid, name, idfrg
+        data = {
+            "id": oid,
+            "name": name,
+            "idfrg": idfrg
+        }
+        return data
     except jwt.ExpiredSignatureError:
         print("O token expirou.")
         return None, None
@@ -95,17 +100,18 @@ class MicrosoftGraphOAuth2Adapter(OAuth2Adapter):
         import logging
         logger = logging.getLogger(__name__)                
         logger.info(f"Authorization Bearer: {token.token} ")     
-        headers = {"Authorization": "Bearer {0}".format(token.token)}
-        response = (
-            get_adapter()
-            .get_requests_session()
-            .get(
-                self.profile_url,
-                params=self.profile_url_params,
-                headers=headers,
-            )
-        )
-        extra_data = _check_errors(response)
+        # headers = {"Authorization": "Bearer {0}".format(token.token)}
+        # response = (
+        #     get_adapter()
+        #     .get_requests_session()
+        #     .get(
+        #         self.profile_url,
+        #         params=self.profile_url_params,
+        #         headers=headers,
+        #     )
+        # )
+        # extra_data = _check_errors(response)
+        extra_data = extract_oid_and_name(token.token)
         return self.get_provider().sociallogin_from_response(request, extra_data)
 
 
